@@ -12,5 +12,5 @@ RUN pip install -U -r requirements.txt
 
 # set working dir & run it
 WORKDIR /app
-COPY start.sh /app
-CMD ["/bin/bash", "/start.sh"]
+COPY . /app
+CMD ["bash", "start.sh"]
