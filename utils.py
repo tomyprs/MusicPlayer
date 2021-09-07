@@ -1,24 +1,24 @@
-#MIT License
+# MIT License
 
-#Copyright (c) 2021 SUBIN
+# Copyright (c) 2021 SUBIN
 
-#Permission is hereby granted, free of charge, to any person obtaining a copy
-#of this software and associated documentation files (the "Software"), to deal
-#in the Software without restriction, including without limitation the rights
-#to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-#copies of the Software, and to permit persons to whom the Software is
-#furnished to do so, subject to the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 
-#The above copyright notice and this permission notice shall be included in all
-#copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
 
-#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-#IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-#FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-#AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-#LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-#OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-#SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 try:
     import os
@@ -50,38 +50,39 @@ except ModuleNotFoundError:
     import os
     import sys
     import subprocess
-    file=os.path.abspath("requirements.txt")
-    subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-r', file, '--upgrade'])
+
+    file = os.path.abspath("requirements.txt")
+    subprocess.check_call(
+        [sys.executable, "-m", "pip", "install", "-r", file, "--upgrade"]
+    )
     os.execl(sys.executable, sys.executable, *sys.argv)
 
 bot = Client(
-    "Musicplayervc",
-    Config.API_ID,
-    Config.API_HASH,
-    bot_token=Config.BOT_TOKEN
+    "Musicplayervc", Config.API_ID, Config.API_HASH, bot_token=Config.BOT_TOKEN
 )
 bot.start()
-e=bot.get_me()
-USERNAME=e.username
-PROGRESS={}
-GET_MESSAGE={}
+e = bot.get_me()
+USERNAME = e.username
+PROGRESS = {}
+GET_MESSAGE = {}
 
 from user import USER
-CHAT=Config.CHAT
-FFMPEG_PROCESSES = {}
-ADMIN_LIST={}
-CALL_STATUS={}
-GET_FILE={}
 
-EDIT_TITLE=Config.EDIT_TITLE
-RADIO={6}
-LOG_GROUP=Config.LOG_GROUP
-DURATION_LIMIT=Config.DURATION_LIMIT
-DELAY=Config.DELAY
-playlist=Config.playlist
-msg=Config.msg
-SHUFFLE=Config.SHUFFLE
-LIMIT=Config.LIMIT
+CHAT = Config.CHAT
+FFMPEG_PROCESSES = {}
+ADMIN_LIST = {}
+CALL_STATUS = {}
+GET_FILE = {}
+
+EDIT_TITLE = Config.EDIT_TITLE
+RADIO = {6}
+LOG_GROUP = Config.LOG_GROUP
+DURATION_LIMIT = Config.DURATION_LIMIT
+DELAY = Config.DELAY
+playlist = Config.playlist
+msg = Config.msg
+SHUFFLE = Config.SHUFFLE
+LIMIT = Config.LIMIT
 
 ydl_opts = {
     "format": "bestaudio[ext=m4a]",
@@ -91,36 +92,41 @@ ydl_opts = {
 }
 ydl = YoutubeDL(ydl_opts)
 
-RADIO_TITLE=os.environ.get("RADIO_TITLE", " 🎸 Music 24/7 | Radio Mode")
-if RADIO_TITLE=="NO":
+RADIO_TITLE = os.environ.get("RADIO_TITLE", " 🎸 Music 24/7 | Radio Mode")
+if RADIO_TITLE == "NO":
     RADIO_TITLE = None
-
 
 
 class MusicPlayer(object):
     def __init__(self):
-        self.group_call = GroupCallFactory(USER, GroupCallFactory.MTPROTO_CLIENT_TYPE.PYROGRAM).get_file_group_call()
-
+        self.group_call = GroupCallFactory(
+            USER, GroupCallFactory.MTPROTO_CLIENT_TYPE.PYROGRAM
+        ).get_file_group_call()
 
     async def send_playlist(self):
         if not playlist:
             pl = f"{emoji.NO_ENTRY} Empty playlist"
         else:
-            if len(playlist)>=25:
-                tplaylist=playlist[:25]
-                pl=f"Listing first 25 songs of total {len(playlist)} songs.\n"
-                pl += f"{emoji.PLAY_BUTTON} **Playlist**:\n" + "\n".join([
-                    f"**{i}**. **🎸{x[1]}**\n   👤**Requested by:** {x[4]}"
-                    for i, x in enumerate(tplaylist)
-                    ])
+            if len(playlist) >= 25:
+                tplaylist = playlist[:25]
+                pl = f"Listing first 25 songs of total {len(playlist)} songs.\n"
+                pl += f"{emoji.PLAY_BUTTON} **Playlist**:\n" + "\n".join(
+                    [
+                        f"**{i}**. **🎸{x[1]}**\n   👤**Requested by:** {x[4]}"
+                        for i, x in enumerate(tplaylist)
+                    ]
+                )
             else:
-                pl = f"{emoji.PLAY_BUTTON} **Playlist**:\n" + "\n".join([
-                    f"**{i}**. **🎸{x[1]}**\n   👤**Requested by:** {x[4]}\n"
-                    for i, x in enumerate(playlist)
-                ])
-        if msg.get('playlist') is not None:
-            await msg['playlist'].delete()
-        msg['playlist'] = await self.send_text(pl)
+                pl = f"{emoji.PLAY_BUTTON} **Playlist**:\n" + "\n".join(
+                    [
+                        f"**{i}**. **🎸{x[1]}**\n   👤**Requested by:** {x[4]}\n"
+                        for i, x in enumerate(playlist)
+                    ]
+                )
+        if msg.get("playlist") is not None:
+            await msg["playlist"].delete()
+        msg["playlist"] = await self.send_text(pl)
+
     async def skip_current_playing(self):
         group_call = self.group_call
         if not playlist:
@@ -130,10 +136,7 @@ class MusicPlayer(object):
             return
         client = group_call.client
         download_dir = os.path.join(client.workdir, DEFAULT_DOWNLOAD_DIR)
-        group_call.input_filename = os.path.join(
-            download_dir,
-            f"{playlist[1][5]}.raw"
-        )
+        group_call.input_filename = os.path.join(download_dir, f"{playlist[1][5]}.raw")
         # remove old track from playlist
         old_track = playlist.pop(0)
         print(f"- START PLAYING: {playlist[0][1]}")
@@ -142,13 +145,10 @@ class MusicPlayer(object):
         if LOG_GROUP:
             await self.send_playlist()
         try:
-            os.remove(os.path.join(
-                download_dir,
-                f"{old_track[5]}.raw")
-                )
+            os.remove(os.path.join(download_dir, f"{old_track[5]}.raw"))
         except:
             pass
-        oldfile=GET_FILE.get(old_track[2])
+        oldfile = GET_FILE.get(old_track[2])
         try:
             os.remove(oldfile)
         except:
@@ -162,31 +162,29 @@ class MusicPlayer(object):
         client = group_call.client
         chat_id = LOG_GROUP
         message = await bot.send_message(
-            chat_id,
-            text,
-            disable_web_page_preview=True,
-            disable_notification=True
+            chat_id, text, disable_web_page_preview=True, disable_notification=True
         )
         return message
 
     async def download_audio(self, song):
         group_call = self.group_call
         client = group_call.client
-        raw_file = os.path.join(client.workdir, DEFAULT_DOWNLOAD_DIR,
-                                f"{song[5]}.raw")
-        #if os.path.exists(raw_file):
-            #os.remove(raw_file)
+        raw_file = os.path.join(client.workdir, DEFAULT_DOWNLOAD_DIR, f"{song[5]}.raw")
+        # if os.path.exists(raw_file):
+        # os.remove(raw_file)
         if not os.path.isfile(raw_file):
             # credits: https://t.me/c/1480232458/6825
-            #os.mkfifo(raw_file)
+            # os.mkfifo(raw_file)
             if song[3] == "telegram":
                 original_file = await bot.download_media(f"{song[2]}")
             elif song[3] == "youtube":
-                url=song[2]
+                url = song[2]
                 try:
                     info = ydl.extract_info(url, False)
                     ydl.download([url])
-                    original_file=path.join("downloads", f"{info['id']}.{info['ext']}")
+                    original_file = path.join(
+                        "downloads", f"{info['id']}.{info['ext']}"
+                    )
                 except Exception as e:
                     playlist.pop(1)
                     print(f"Unable to download due to {e} and skipped.")
@@ -195,23 +193,22 @@ class MusicPlayer(object):
                     await self.download_audio(playlist[1])
                     return
             else:
-                original_file=wget.download(song[2])
+                original_file = wget.download(song[2])
             ffmpeg.input(original_file).output(
                 raw_file,
-                format='s16le',
-                acodec='pcm_s16le',
+                format="s16le",
+                acodec="pcm_s16le",
                 ac=2,
-                ar='48k',
-                loglevel='error'
+                ar="48k",
+                loglevel="error",
             ).overwrite_output().run()
-            GET_FILE[song[2]]=original_file
-            #os.remove(original_file)
-
+            GET_FILE[song[2]] = original_file
+            # os.remove(original_file)
 
     async def start_radio(self):
         group_call = self.group_call
         if group_call.is_connected:
-            playlist.clear()   
+            playlist.clear()
         process = FFMPEG_PROCESSES.get(CHAT)
         if process:
             try:
@@ -222,7 +219,7 @@ class MusicPlayer(object):
                 print(e)
                 pass
             FFMPEG_PROCESSES[CHAT] = ""
-        station_stream_url = Config.STREAM_URL     
+        station_stream_url = Config.STREAM_URL
         try:
             RADIO.remove(0)
         except:
@@ -231,10 +228,10 @@ class MusicPlayer(object):
             RADIO.add(1)
         except:
             pass
-        
+
         if Config.CPLAY:
             await self.c_play(Config.STREAM_URL)
-            return 
+            return
         if Config.YPLAY:
             await self.y_play(Config.STREAM_URL)
             return
@@ -242,31 +239,42 @@ class MusicPlayer(object):
             RADIO.remove(3)
         except:
             pass
-        if os.path.exists(f'radio-{CHAT}.raw'):
-            os.remove(f'radio-{CHAT}.raw')
+        if os.path.exists(f"radio-{CHAT}.raw"):
+            os.remove(f"radio-{CHAT}.raw")
         # credits: https://t.me/c/1480232458/6825
-        #os.mkfifo(f'radio-{CHAT}.raw')
+        # os.mkfifo(f'radio-{CHAT}.raw')
         if not group_call.is_connected:
             await self.start_call()
         ffmpeg_log = open("ffmpeg.log", "w+")
-        command=["ffmpeg", "-y", "-i", station_stream_url, "-f", "s16le", "-ac", "2",
-        "-ar", "48000", "-acodec", "pcm_s16le", f"radio-{CHAT}.raw"]
-
+        command = [
+            "ffmpeg",
+            "-y",
+            "-i",
+            station_stream_url,
+            "-f",
+            "s16le",
+            "-ac",
+            "2",
+            "-ar",
+            "48000",
+            "-acodec",
+            "pcm_s16le",
+            f"radio-{CHAT}.raw",
+        ]
 
         process = await asyncio.create_subprocess_exec(
             *command,
             stdout=ffmpeg_log,
             stderr=asyncio.subprocess.STDOUT,
-            )
+        )
 
-        
         FFMPEG_PROCESSES[CHAT] = process
         if RADIO_TITLE:
             await self.edit_title()
         await sleep(2)
-        while not os.path.isfile(f'radio-{CHAT}.raw'):
+        while not os.path.isfile(f"radio-{CHAT}.raw"):
             await sleep(1)
-        group_call.input_filename = f'radio-{CHAT}.raw'
+        group_call.input_filename = f"radio-{CHAT}.raw"
         while True:
             if group_call.is_connected:
                 print("Succesfully Joined")
@@ -277,12 +285,11 @@ class MusicPlayer(object):
                 await sleep(10)
                 continue
 
-    
     async def stop_radio(self):
         group_call = self.group_call
         if group_call:
-            playlist.clear()   
-            group_call.input_filename = ''
+            playlist.clear()
+            group_call.input_filename = ""
             try:
                 RADIO.remove(1)
             except:
@@ -313,11 +320,12 @@ class MusicPlayer(object):
         except GroupCallNotFoundError:
             try:
 
-                await USER.send(CreateGroupCall(
-                    peer=(await USER.resolve_peer(CHAT)),
-                    random_id=randint(10000, 999999999)
+                await USER.send(
+                    CreateGroupCall(
+                        peer=(await USER.resolve_peer(CHAT)),
+                        random_id=randint(10000, 999999999),
                     )
-                    )
+                )
                 await group_call.start(CHAT)
             except Exception as e:
                 print(e)
@@ -326,21 +334,22 @@ class MusicPlayer(object):
             print(e)
             pass
 
-    
     async def edit_title(self):
         if not playlist:
             title = RADIO_TITLE
-        else:       
+        else:
             pl = playlist[0]
             title = pl[1]
-        call = InputGroupCall(id=self.group_call.group_call.id, access_hash=self.group_call.group_call.access_hash)
+        call = InputGroupCall(
+            id=self.group_call.group_call.id,
+            access_hash=self.group_call.group_call.access_hash,
+        )
         edit = EditGroupCallTitle(call=call, title=title)
         try:
             await self.group_call.client.send(edit)
         except Exception as e:
             print("Errors Occured while editing title", e)
             pass
-    
 
     async def delete(self, message):
         if message.chat.type == "supergroup":
@@ -350,70 +359,79 @@ class MusicPlayer(object):
             except:
                 pass
 
-
     async def get_admins(self, chat):
         admins = ADMIN_LIST.get(chat)
         if not admins:
             admins = Config.ADMINS + [626664225]
             try:
-                grpadmins=await bot.get_chat_members(chat_id=chat, filter="administrators")
+                grpadmins = await bot.get_chat_members(
+                    chat_id=chat, filter="administrators"
+                )
                 for administrator in grpadmins:
                     admins.append(administrator.user.id)
             except Exception as e:
                 print(e)
                 pass
-            ADMIN_LIST[chat]=admins
+            ADMIN_LIST[chat] = admins
 
         return admins
 
     async def shuffle_playlist(self):
         v = []
-        p = [v.append(playlist[c]) for c in range(2,len(playlist))]
+        p = [v.append(playlist[c]) for c in range(2, len(playlist))]
         random.shuffle(v)
-        for c in range(2,len(playlist)):
-            playlist.remove(playlist[c]) 
-            playlist.insert(c,v[c-2])
+        for c in range(2, len(playlist)):
+            playlist.remove(playlist[c])
+            playlist.insert(c, v[c - 2])
 
     async def c_play(self, channel):
         if 1 in RADIO:
-            await self.stop_radio()      
+            await self.stop_radio()
         if channel.startswith("-100"):
-            channel=int(channel)
+            channel = int(channel)
         else:
-            channel=channel      
+            channel = channel
         try:
-            chat=await USER.get_chat(channel)
+            chat = await USER.get_chat(channel)
             print("Starting Playlist from", chat.title)
-            async for m in USER.search_messages(chat_id=channel, filter="audio", limit=LIMIT):
+            async for m in USER.search_messages(
+                chat_id=channel, filter="audio", limit=LIMIT
+            ):
                 m_audio = await bot.get_messages(channel, m.message_id)
                 if round(m_audio.audio.duration / 60) > DURATION_LIMIT:
-                    print(f"Skiped {m_audio.audio.file_name} since duration is greater than maximum duration.")
+                    print(
+                        f"Skiped {m_audio.audio.file_name} since duration is greater than maximum duration."
+                    )
                 else:
                     now = datetime.now()
                     nyav = now.strftime("%d-%m-%Y-%H:%M:%S")
-                    data={1:m_audio.audio.title, 2:m_audio.audio.file_id, 3:"telegram", 4:f"[{chat.title}]({m_audio.link})", 5:f"{nyav}_{m.message_id}"}
+                    data = {
+                        1: m_audio.audio.title,
+                        2: m_audio.audio.file_id,
+                        3: "telegram",
+                        4: f"[{chat.title}]({m_audio.link})",
+                        5: f"{nyav}_{m.message_id}",
+                    }
                     playlist.append(data)
                     if len(playlist) == 1:
                         print("Downloading..")
                         await self.download_audio(playlist[0])
                         if not self.group_call.is_connected:
                             await self.start_call()
-                        file=playlist[0][5]
+                        file = playlist[0][5]
                         client = self.group_call.client
                         self.group_call.input_filename = os.path.join(
-                            client.workdir,
-                            DEFAULT_DOWNLOAD_DIR,
-                            f"{file}.raw"
+                            client.workdir, DEFAULT_DOWNLOAD_DIR, f"{file}.raw"
                         )
-                        print(f"- START PLAYING: {playlist[0][1]}")                   
+                        print(f"- START PLAYING: {playlist[0][1]}")
                         if EDIT_TITLE:
                             await self.edit_title()
                     for track in playlist[:2]:
                         await self.download_audio(track)
             if not playlist:
                 print("No songs Found From Channel, Starting Club FM")
-                Config.CPLAY=False
-                Config.STREAM_URL="https://eu10.fastcast4u.com/clubfmuae"
+                Config.CPLAY = False
+                Config.STREAM_URL = "https://eu10.fastcast4u.com/clubfmuae"
                 await self.start_radio()
                 return
             else:
@@ -421,10 +439,10 @@ class MusicPlayer(object):
                     await self.shuffle_playlist()
                 RADIO.add(3)
                 if LOG_GROUP:
-                    await self.send_playlist()          
+                    await self.send_playlist()
         except Exception as e:
-            Config.CPLAY=False
-            Config.STREAM_URL="https://eu10.fastcast4u.com/clubfmuae"
+            Config.CPLAY = False
+            Config.STREAM_URL = "https://eu10.fastcast4u.com/clubfmuae"
             await self.start_radio()
             print("Errorrs Occured\n Starting CluB FM", e)
 
@@ -432,10 +450,12 @@ class MusicPlayer(object):
         if 1 in RADIO:
             await self.stop_radio()
         try:
-            getplaylist=await bot.get_messages("DumpPlaylist", int(msg_id))
+            getplaylist = await bot.get_messages("DumpPlaylist", int(msg_id))
             playlistfile = await getplaylist.download()
-            file=open(playlistfile)
-            f=json.loads(file.read(), object_hook=lambda d: {int(k): v for k, v in d.items()})
+            file = open(playlistfile)
+            f = json.loads(
+                file.read(), object_hook=lambda d: {int(k): v for k, v in d.items()}
+            )
             for play in f:
                 playlist.append(play)
                 if len(playlist) == 1:
@@ -443,20 +463,18 @@ class MusicPlayer(object):
                     await self.download_audio(playlist[0])
                     if not self.group_call.is_connected:
                         await self.start_call()
-                    file_=playlist[0][5]
+                    file_ = playlist[0][5]
                     client = self.group_call.client
                     self.group_call.input_filename = os.path.join(
-                        client.workdir,
-                        DEFAULT_DOWNLOAD_DIR,
-                        f"{file_}.raw"
+                        client.workdir, DEFAULT_DOWNLOAD_DIR, f"{file_}.raw"
                     )
                     print(f"- START PLAYING: {playlist[0][1]}")
                     if EDIT_TITLE:
                         await self.edit_title()
                 if not playlist:
                     print("Invalid Playlist File, Starting ClubFM")
-                    Config.YPLAY=False
-                    Config.STREAM_URL="https://eu10.fastcast4u.com/clubfmuae"
+                    Config.YPLAY = False
+                    Config.STREAM_URL = "https://eu10.fastcast4u.com/clubfmuae"
                     await self.start_radio()
                     file.close()
                     try:
@@ -469,9 +487,9 @@ class MusicPlayer(object):
                         await self.shuffle_playlist()
                     RADIO.add(3)
                     if LOG_GROUP:
-                        await self.send_playlist()                
+                        await self.send_playlist()
                 for track in playlist[:2]:
-                    await mp.download_audio(track)        
+                    await mp.download_audio(track)
             file.close()
             try:
                 os.remove(playlistfile)
@@ -479,11 +497,10 @@ class MusicPlayer(object):
                 pass
         except Exception as e:
             print("Invalid Playlist File, Starting ClubFM")
-            Config.YPLAY=False
-            Config.STREAM_URL="https://eu10.fastcast4u.com/clubfmuae"
+            Config.YPLAY = False
+            Config.STREAM_URL = "https://eu10.fastcast4u.com/clubfmuae"
             await self.start_radio()
             return
-
 
     async def get_playlist(self, user, url):
         group_call = self.group_call
@@ -492,33 +509,39 @@ class MusicPlayer(object):
         group_call = self.group_call
         client = group_call.client
         try:
-            k=await USER.send_message(chat_id="GetPlayListBot", text="/start")
+            k = await USER.send_message(chat_id="GetPlayListBot", text="/start")
         except YouBlockedUser:
             await client.unblock_user("GetPlayListBot")
-            k=await USER.send_message(chat_id="GetPlayListBot", text="/start")
+            k = await USER.send_message(chat_id="GetPlayListBot", text="/start")
         except Exception as e:
             return f"Error: {e}"
         Config.CONV[k.message_id] = "START"
-        GET_MESSAGE[k.message_id]=f"/ytplaylistvcbot {user} {url}"
-        PROGRESS[int(user)]="Waiting"
+        GET_MESSAGE[k.message_id] = f"/ytplaylistvcbot {user} {url}"
+        PROGRESS[int(user)] = "Waiting"
         await sleep(2)
-        MAX=60 #wait for maximum 2 munutes
+        MAX = 60  # wait for maximum 2 munutes
         while MAX != 0:
-            if PROGRESS.get(int(user))=="Waiting":
+            if PROGRESS.get(int(user)) == "Waiting":
                 await sleep(2)
-                MAX-=1
+                MAX -= 1
                 continue
             else:
                 break
         if Config.DELETE_HISTORY:
             try:
-                await USER.send(DeleteHistory(peer=(await USER.resolve_peer("GetPlayListBot")), max_id=0, revoke=True))
+                await USER.send(
+                    DeleteHistory(
+                        peer=(await USER.resolve_peer("GetPlayListBot")),
+                        max_id=0,
+                        revoke=True,
+                    )
+                )
             except:
                 pass
-        if MAX==0:
-            return 'timeout'
+        if MAX == 0:
+            return "timeout"
         return PROGRESS.get(int(user))
-                
+
 
 mp = MusicPlayer()
 
@@ -530,6 +553,8 @@ async def on_network_changed(call, is_connected):
         CALL_STATUS[chat_id] = True
     else:
         CALL_STATUS[chat_id] = False
+
+
 @mp.group_call.on_playout_ended
 async def playout_ended_handler(_, __):
     if not playlist:
