@@ -58,11 +58,11 @@ else:
     finalurl=STREAM
 
 class Config:
-    ADMIN = os.environ.get("ADMINS", '')
+    ADMIN = os.environ.get("ADMINS", None)
     ADMINS = [int(admin) if re.search('^\d+$', admin) else admin for admin in (ADMIN).split()]
-    API_ID = int(os.environ.get("API_ID", ''))
-    CHAT = int(os.environ.get("CHAT", ""))
-    LOG_GROUP=os.environ.get("LOG_GROUP", "")
+    API_ID = int(os.environ.get("API_ID", 0))
+    CHAT = int(os.environ.get("CHAT", 0))
+    LOG_GROUP=os.environ.get("LOG_GROUP", 0)
     if LOG_GROUP:
         LOG_GROUP=int(LOG_GROUP)
     else:
@@ -90,4 +90,3 @@ class Config:
     playlist=[]
     msg = {}
     CONV = {}
-
