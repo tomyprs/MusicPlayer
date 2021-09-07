@@ -1,0 +1,10 @@
+version: "3.7"
+
+services:
+  musicplayer:
+      build:
+        context: https://github.com/tomyprs/MusicPlayer.git#master
+      restart: on-failure
+      env_file:
+        - config.env
+        
