@@ -13,4 +13,4 @@ RUN pip install -U -r requirements.txt
 # set working dir & run it
 WORKDIR /app
 COPY . /app
-CMD ["bash", "start.sh"]
+CMD ["python3", "main.py"]
