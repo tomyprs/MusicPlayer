@@ -1,12 +1,16 @@
-FROM python:latest
+# Set base image
+FROM python:3.9-slim-buster
 
-RUN apt update && apt upgrade -y
-RUN apt install git curl python3-pip ffmpeg -y
-RUN pip3 install -U pip
-COPY requirements.txt /requirements.txt
-RUN cd /
-RUN pip3 install -U -r requirements.txt
-RUN mkdir /MusicPlayer
-WORKDIR /MusicPlayer
-COPY start.sh /start.sh
+# make an upgrade
+RUN apt -qq update
+RUN apt -qq install -y --no-install-recommends \
+    git curl ffmpeg 
+
+# requirements install 
+COPY requirements.txt .
+RUN pip install -U -r requirements.txt
+
+# set working dir & run it
+WORKDIR /app
+COPY start.sh /app
 CMD ["/bin/bash", "/start.sh"]
