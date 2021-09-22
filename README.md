@@ -17,6 +17,8 @@ License -> https://github.com/subinps/MusicPlayer/blob/master/LICENSE
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/subinps/MusicPlayer)
 
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https%3A%2F%2Fgithub.com%2Ftomyprs%2FMusicPlayer.git&envs=API_ID%2CAPI_HASH%2CBOT_TOKEN%2CSESSION_STRING%2CCHAT%2CLOG_GROUP%2CADMINS%2CADMIN_ONLY%2CMAXIMUM_DURATION%2CSTREAM_URL%2CREPLY_MESSAGE&optionalEnvs=LOG_GROUP%2CADMIN_ONLY%2CMAXIMUM_DURATION%2CSTREAM_URL&API_IDDesc=api_id+part+of+your+Telegram+API+Key+from+my.telegram.org%2Fapps&API_HASHDesc=api_hash+part+of+your+Telegram+API+Key+from+my.telegram.org%2Fapps&BOT_TOKENDesc=Bot+token+of+Bot%2C+get+from+%40Botfather&SESSION_STRINGDesc=Session+string%2C+read+the+README+to+learn+how+to+export+it+with+Pyrogram&CHATDesc=ID+of+Channel+or+Group+where+the+Bot+plays+Music&ADMIN_ONLYDesc=Change+it+to+%27N%27+if+you+want+to+make+%2Fplay+and+%2Fdplay+available+for+everyone.+By+default+only+admins+of+CHAT+can+use+it.&MAXIMUM_DURATIONDesc=Maximum+duration+for+music&STREAM_URLDesc=URL+of+Radio+station+or+Youtube+live+video+url+to+stream+with+%2Fradio+command&REPLY_MESSAGEDesc=Reply+who+chat+bot&ADMIN_ONLYDefault=Y&STREAM_URLDefault=https%3A%2F%2Fyoutu.be%2F-5KAN9_CzSA&REPLY_MESSAGEDefault=Hello&referralCode=qycyrW)
+
 NOTE: Make sure you have started a VoiceChat in your Group before deploying.
 ### Deploy to VPS
 
